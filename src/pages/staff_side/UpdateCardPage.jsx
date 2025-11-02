@@ -59,7 +59,9 @@ export default function UpdateCardPage() {
 
         {/* Contacts */}
         <ContactsPanel person={person} />
-
+        <div className="sm:hidden">
+          <SocialIcons />
+        </div>
         {/* Actions */}
         <div className="flex items-center gap-3">
           <PrimaryButton label="Update Contact" onClick={handleSaveContact} />
