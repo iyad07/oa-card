@@ -15,7 +15,7 @@ export default function App() {
           <Route path="/staff/email" element={<StaffEmailPage />} />
           <Route path="/staff/verify" element={<VerifyPage />} />
           <Route path="/staff/edit" element={<EditDigitalIDPage />} />
-          <Route path="/staff" element={<UpdateCardPage />} />
+          <Route path="/staff/update" element={<UpdateCardPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
