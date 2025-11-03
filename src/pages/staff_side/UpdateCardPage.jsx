@@ -1,4 +1,6 @@
 import { useMemo } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { slugToName, nameToSlug } from '../../utils/slug'
 import avatarImg from '../../assets/DSC00533.png'
 import linkedinLogo from '../../assets/ph_linkedin-logo.png'
 import xLogo from '../../assets/ph_x-logo.png'
@@ -15,15 +17,18 @@ import IconShare from '../../icons/ShareIcon'
 
 
 export default function UpdateCardPage() {
+  const { name: nameParam } = useParams()
+  const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : 'Charis Borquaye'), [nameParam])
+  const navigate = useNavigate()
   const person = useMemo(() => ({
-    name: 'Charis Borquaye',
+    name: displayName,
     title: 'Financial Analyst',
     location: 'Ghana',
     phone: '(505) 555-0125',
     email: 'at@oamarkets.com',
     website: 'oamarkets.com',
     address: '1 Norfo Close, Dzorwulu, Accra',
-  }), [])
+  }), [displayName])
 
   const avatarUrl = avatarImg
 
@@ -65,7 +70,7 @@ export default function UpdateCardPage() {
         {/* Actions */}
         <div className="flex items-center gap-3">
           
-          <PrimaryButton label="Update Contact" onClick={() => window.location.href = '/staff/edit'} />
+          <PrimaryButton label="Update Contact" onClick={() => navigate(`/staff/edit/${nameToSlug(person.name)}`)} />
           <a className="card flex h-11 w-11 items-center justify-center p-0" href={`https://${person.website}`} target="_blank" rel="noreferrer" aria-label="Visit website">
             <IconShare/>
           </a>

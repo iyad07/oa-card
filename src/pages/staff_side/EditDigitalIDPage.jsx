@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import PrimaryButton from '../../components/PrimaryButton'
 import brandImg from '../../assets/Frame 16.png'
 import linkedinLogo from '../../assets/ph_linkedin-logo.png'
@@ -10,9 +10,11 @@ import avatarImg from '../../assets/DSC00533.png'
 import BrandHero from '../../components/BrandHero'
 import ContactsPanel from '../../components/ContactsPanel'
 import SocialIcons from '../../components/SocialIcons'
+import { slugToName, nameToSlug } from '../../utils/slug'
 
 export default function EditDigitalIDPage() {
-  const [fullName, setFullName] = useState('')
+  const { name: nameParam } = useParams()
+  const [fullName, setFullName] = useState(() => (nameParam ? slugToName(nameParam) : ''))
   const [phone, setPhone] = useState('')
   const [linkedin, setLinkedin] = useState('')
   const [xUrl, setXUrl] = useState('')
@@ -49,7 +51,7 @@ export default function EditDigitalIDPage() {
         </div>
 
         {/* Back link */}
-        <Link to="/staff/update" className="text-[#00272B] text-sm inline-flex items-center gap-1">
+        <Link to={`/staff/update/${nameToSlug(fullName || 'Charis Borquaye')}`} className="text-[#00272B] text-sm inline-flex items-center gap-1">
           <span aria-hidden>←</span> Back
         </Link>
 

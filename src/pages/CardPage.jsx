@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import avatarImg from '../assets/DSC00533.png'
 import linkedinLogo from '../assets/ph_linkedin-logo.png'
 import xLogo from '../assets/ph_x-logo.png'
@@ -10,20 +11,25 @@ import ContactsPanel from '../components/ContactsPanel'
 import PrimaryButton from '../components/PrimaryButton'
 import SocialIcons from '../components/SocialIcons'
 import IconDownload from '../icons/DownloadIcon'
+import { slugToName, nameToSlug } from '../utils/slug'
 
 
 
 export default function CardPage() {
   const [isQRMode, setIsQRMode] = useState(false)
+  const { name: nameParam } = useParams()
+  const displayName = useMemo(() => (
+    nameParam ? slugToName(nameParam) : 'Charis Borquaye'
+  ), [nameParam])
   const person = useMemo(() => ({
-    name: 'Charis Borquaye',
+    name: displayName,
     title: 'Financial Analyst',
     location: 'Ghana',
     phone: '(505) 555-0125',
     email: 'at@oamarkets.com',
     website: 'oamarkets.com',
     address: '1 Norfo Close, Dzorwulu, Accra',
-  }), [])
+  }), [displayName])
 
   const avatarUrl = avatarImg
 

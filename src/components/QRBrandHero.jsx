@@ -3,6 +3,7 @@ import subtractBg from '../assets/Subtract (1).png'
 import vectorImg from '../assets/Vector.png'
 import SmileyIcon from '../icons/SmileyIcon'
 import QRCode from 'react-qr-code'
+import { nameToSlug } from '../utils/slug'
 
 export default function QRBrandHero({ person, avatarUrl, onBackClick }) {
   return (
@@ -13,7 +14,7 @@ export default function QRBrandHero({ person, avatarUrl, onBackClick }) {
           <div className="h-full w-full grid place-items-center bg-white">
             <div className="rounded-xl p-4 bg-white">
               <QRCode
-                value={`${window.location.origin}/`}
+                value={`${window.location.origin}/${nameToSlug(person.name)}`}
                 size={224}
                 bgColor="#ffffff"
                 fgColor="#00272B"

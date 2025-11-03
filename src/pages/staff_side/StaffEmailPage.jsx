@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useAuth } from '../../utils/AuthContext.jsx'
 import PrimaryButton from '../../components/PrimaryButton'
 import brandImg from '../../assets/Frame 16.png'
 
@@ -6,6 +7,7 @@ export default function StaffEmailPage() {
   const [email, setEmail] = useState('')
   const [step, setStep] = useState('email') // 'email' | 'verify'
   const [otp, setOtp] = useState('')
+  const { login } = useAuth()
 
   const requestOtp = (e) => {
     e.preventDefault()
@@ -20,6 +22,8 @@ export default function StaffEmailPage() {
     // TODO: Integrate OTP verification API
     console.log('Verifying OTP:', otp)
     alert(`Verifying OTP: ${otp || '(empty)'}`)
+    // Mark user as verified/authenticated upon successful OTP verification
+    login()
   }
 
   const resendCode = (e) => {
