@@ -13,7 +13,7 @@ import SocialIcons from '../components/SocialIcons'
 import IconDownload from '../icons/DownloadIcon'
 import { slugToName, nameToSlug } from '../utils/slug'
 import { useAuth } from '../utils/AuthContext.jsx'
-import { getVcardUrl } from '../utils/api'
+import { getVcardUrl, getUser } from '../utils/api'
 
 
 
@@ -45,7 +45,17 @@ export default function CardPage() {
   const avatarUrl = avatarImg
 
   const handleSaveContact = () => {
-    // Prefer backend vCard if authenticated and userId is available
+    // Prefer backend vCard for the scanned id if present
+    if (idParam) {
+      const a = document.createElement('a')
+      a.href = getVcardUrl(idParam)
+      a.download = ''
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      return
+    }
+    // Otherwise, if authenticated, use the owner's vCard
     if (userId) {
       const a = document.createElement('a')
       a.href = getVcardUrl(userId)
@@ -78,67 +88,88 @@ export default function CardPage() {
     URL.revokeObjectURL(url)
   }
 
-  // When viewing /scan/:id and not the authenticated owner, fetch the public vCard
+  // For /scan/:id, try to fetch backend user details; if that fails, fall back to public vCard.
   useEffect(() => {
-    const shouldFetchPublic = Boolean(idParam && (!userId || idParam !== userId))
-    if (!shouldFetchPublic) {
+    if (!idParam) return
+    // If owner is authenticated and id matches, profile already covers
+    if (userId && idParam === userId) {
+      setPublicPerson(null)
+      setPublicLoadState('idle')
       return
     }
-    let aborted = false
+    let cancelled = false
     setPublicLoadState('loading')
-    // Fetch raw vCard text and parse minimal fields for display
-    fetch(getVcardUrl(idParam))
-      .then(async (res) => {
-        if (!res.ok) throw new Error('Failed to fetch vCard')
-        const text = await res.text()
-        if (aborted) return
-        const lines = text.split(/\r?\n/)
-        const getField = (prefix) => {
-          const line = lines.find((l) => l.startsWith(prefix))
-          return line ? line.slice(prefix.length) : ''
-        }
-        const rawName = getField('FN:') || 'Unknown'
-        const rawTitle = getField('TITLE:') || ''
-        const rawPhone = (() => {
-          const telLine = lines.find((l) => l.startsWith('TEL'))
-          if (!telLine) return ''
-          const idx = telLine.indexOf(':')
-          return idx !== -1 ? telLine.slice(idx + 1) : ''
-        })()
-        const rawEmail = getField('EMAIL:') || ''
-        const rawUrl = getField('URL:') || ''
-        const website = rawUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'oamarkets.com'
-        const adrLine = lines.find((l) => l.startsWith('ADR'))
-        let address = ''
-        let location = ''
-        if (adrLine) {
-          const idx = adrLine.indexOf(':')
-          const payload = idx !== -1 ? adrLine.slice(idx + 1) : ''
-          const parts = payload.split(';')
-          // vCard ADR: PO Box; Extended; Street; City; Region; Postal; Country
-          const street = parts[2] || ''
-          const city = parts[3] || ''
-          const country = parts[6] || ''
-          address = [street, city].filter(Boolean).join(', ')
-          location = country || city || 'Ghana'
-        }
+    const hydrateFromUserOrVcard = async () => {
+      try {
+        const { data } = await getUser(idParam)
+        if (cancelled) return
         const parsed = {
-          name: rawName,
-          title: rawTitle || '—',
-          location: location || 'Ghana',
-          phone: rawPhone || '—',
-          email: rawEmail || '—',
-          website,
-          address: address || '—',
+          name: data?.fullName || 'Unknown',
+          title: data?.position || '—',
+          location: data?.location || 'Ghana',
+          phone: data?.phoneNumber || '—',
+          email: data?.email || '—',
+          website: (data?.website || 'oamarkets.com').replace(/^https?:\/\//, '').replace(/\/$/, ''),
+          address: data?.address || '—',
         }
         setPublicPerson(parsed)
         setPublicLoadState('loaded')
-      })
-      .catch(() => {
-        if (aborted) return
-        setPublicLoadState('error')
-      })
-    return () => { aborted = true }
+      } catch (_err) {
+        if (cancelled) return
+        try {
+          const res = await fetch(getVcardUrl(idParam))
+          if (!res.ok) throw new Error('Failed to fetch vCard')
+          const text = await res.text()
+          if (cancelled) return
+          const lines = text.split(/\r?\n/)
+          const getField = (prefix) => {
+            const line = lines.find((l) => l.startsWith(prefix))
+            return line ? line.slice(prefix.length) : ''
+          }
+          const rawName = getField('FN:') || 'Unknown'
+          const rawTitle = getField('TITLE:') || ''
+          const rawPhone = (() => {
+            const telLine = lines.find((l) => l.startsWith('TEL'))
+            if (!telLine) return ''
+            const idx = telLine.indexOf(':')
+            return idx !== -1 ? telLine.slice(idx + 1) : ''
+          })()
+          const rawEmail = getField('EMAIL:') || ''
+          const rawUrl = getField('URL:') || ''
+          const website = rawUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'oamarkets.com'
+          const adrLine = lines.find((l) => l.startsWith('ADR'))
+          let address = ''
+          let location = ''
+          if (adrLine) {
+            const idx = adrLine.indexOf(':')
+            const payload = idx !== -1 ? adrLine.slice(idx + 1) : ''
+            const parts = payload.split(';')
+            // vCard ADR: PO Box; Extended; Street; City; Region; Postal; Country
+            const street = parts[2] || ''
+            const city = parts[3] || ''
+            const country = parts[6] || ''
+            address = [street, city].filter(Boolean).join(', ')
+            location = country || city || 'Ghana'
+          }
+          const parsed = {
+            name: rawName,
+            title: rawTitle || '—',
+            location: location || 'Ghana',
+            phone: rawPhone || '—',
+            email: rawEmail || '—',
+            website,
+            address: address || '—',
+          }
+          setPublicPerson(parsed)
+          setPublicLoadState('loaded')
+        } catch (_err2) {
+          if (cancelled) return
+          setPublicLoadState('error')
+        }
+      }
+    }
+    hydrateFromUserOrVcard()
+    return () => { cancelled = true }
   }, [idParam, userId])
 
   // Determine existence:
@@ -156,13 +187,7 @@ export default function CardPage() {
   }
 
   // If the person does not exist in backend (and public fetch failed), redirect to 404
-  if (!existsInBackend) {
-    // Allow public fetch to complete for scan routes before redirecting
-    if (idParam && publicLoadState === 'loading') {
-      return null
-    }
-    return <Navigate to="/404" replace />
-  }
+ 
 
   return (
     <div className="space-y-2">

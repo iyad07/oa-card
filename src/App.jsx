@@ -33,7 +33,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<NotFoundPage />} />
+  
         </Route>
       </Routes>
     </BrowserRouter>
