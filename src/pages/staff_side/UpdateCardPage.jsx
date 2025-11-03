@@ -22,7 +22,7 @@ export default function UpdateCardPage() {
   const { name: nameParam } = useParams()
   const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : 'Charis Borquaye'), [nameParam])
   const navigate = useNavigate()
-  const { userId, profile } = useAuth()
+  const { userId, profile, logout } = useAuth()
   const person = useMemo(() => ({
     name: profile?.fullName || displayName,
     title: profile?.position || 'Financial Analyst',
@@ -107,3 +107,7 @@ export default function UpdateCardPage() {
     </div>
   )
 }
+  const handleLogout = () => {
+    logout()
+    navigate('/staff')
+  }
