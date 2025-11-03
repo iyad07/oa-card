@@ -1,26 +1,75 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { requestOtp as apiRequestOtp, verifyOtp as apiVerifyOtp, getUser as apiGetUser } from './api'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [token, setToken] = useState('')
+  const [userId, setUserId] = useState('')
+  const isAuthenticated = Boolean(token)
+  const [profile, setProfile] = useState(null)
+  const [isReady, setIsReady] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('isAuthenticated')
-    setIsAuthenticated(saved === 'true')
+    const savedToken = localStorage.getItem('token') || ''
+    const savedUserId = localStorage.getItem('userId') || ''
+    setToken(savedToken)
+    setUserId(savedUserId)
+    if (savedToken && savedUserId) {
+      // Optionally fetch profile on load
+      apiGetUser(savedUserId).then(({ data }) => setProfile(data)).catch(() => {})
+    }
+    setIsReady(true)
   }, [])
 
-  const login = () => {
-    setIsAuthenticated(true)
-    localStorage.setItem('isAuthenticated', 'true')
+  const requestOtp = async (email) => {
+    const res = await apiRequestOtp(email)
+    return res.data
+  }
+
+  const verifyOtp = async (email, otp) => {
+    const { token: newToken, userId: newUserId } = await apiVerifyOtp(email, otp)
+    setToken(newToken)
+    setUserId(newUserId)
+    localStorage.setItem('token', newToken)
+    localStorage.setItem('userId', newUserId)
+    try {
+      const { data } = await apiGetUser(newUserId)
+      setProfile(data)
+    } catch (_) {}
+    return { token: newToken, userId: newUserId }
+  }
+
+  const refreshProfile = async () => {
+    if (!userId) return null
+    try {
+      const { data } = await apiGetUser(userId)
+      setProfile(data)
+      return data
+    } catch (_) {
+      return null
+    }
   }
 
   const logout = () => {
-    setIsAuthenticated(false)
-    localStorage.setItem('isAuthenticated', 'false')
+    setToken('')
+    setUserId('')
+    setProfile(null)
+    localStorage.removeItem('token')
+    localStorage.removeItem('userId')
   }
 
-  const value = useMemo(() => ({ isAuthenticated, login, logout }), [isAuthenticated])
+  const value = useMemo(() => ({
+    isAuthenticated,
+    isReady,
+    token,
+    userId,
+    profile,
+    requestOtp,
+    verifyOtp,
+    refreshProfile,
+    logout,
+  }), [isAuthenticated, isReady, token, userId, profile])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

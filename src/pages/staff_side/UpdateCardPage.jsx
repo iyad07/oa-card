@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { slugToName, nameToSlug } from '../../utils/slug'
+import { useAuth } from '../../utils/AuthContext.jsx'
+import { getVcardUrl } from '../../utils/api'
 import avatarImg from '../../assets/DSC00533.png'
 import linkedinLogo from '../../assets/ph_linkedin-logo.png'
 import xLogo from '../../assets/ph_x-logo.png'
@@ -20,15 +22,16 @@ export default function UpdateCardPage() {
   const { name: nameParam } = useParams()
   const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : 'Charis Borquaye'), [nameParam])
   const navigate = useNavigate()
+  const { userId, profile } = useAuth()
   const person = useMemo(() => ({
-    name: displayName,
-    title: 'Financial Analyst',
-    location: 'Ghana',
-    phone: '(505) 555-0125',
-    email: 'at@oamarkets.com',
-    website: 'oamarkets.com',
-    address: '1 Norfo Close, Dzorwulu, Accra',
-  }), [displayName])
+    name: profile?.fullName || displayName,
+    title: profile?.position || 'Financial Analyst',
+    location: profile?.location || 'Ghana',
+    phone: profile?.phoneNumber || '(505) 555-0125',
+    email: profile?.email || 'at@oamarkets.com',
+    website: profile?.website || 'oamarkets.com',
+    address: profile?.address || '1 Norfo Close, Dzorwulu, Accra',
+  }), [profile, displayName])
 
   const avatarUrl = avatarImg
 
@@ -84,10 +87,21 @@ export default function UpdateCardPage() {
             <img src={shareIconPng} alt="Share" className="h-5 w-5 object-contain" />
             <span className="text-sm">Share</span>
           </button>
-          <button type="button" className="flex items-center gap-2 text-[#00272B]" aria-label="Download vCard">
-            <IconDownload />
-            <span className="text-sm">Download</span>
-          </button>
+          {userId ? (
+            <a
+              href={getVcardUrl(userId)}
+              className="flex items-center gap-2 text-[#00272B]"
+              aria-label="Download vCard"
+            >
+              <IconDownload />
+              <span className="text-sm">Download</span>
+            </a>
+          ) : (
+            <button type="button" className="flex items-center gap-2 text-[#00272B] opacity-60" aria-label="Download vCard" disabled>
+              <IconDownload />
+              <span className="text-sm">Download</span>
+            </button>
+          )}
         </div>
       </div>
     </div>

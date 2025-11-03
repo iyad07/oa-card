@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import PrimaryButton from '../../components/PrimaryButton'
 import brandImg from '../../assets/Frame 16.png'
@@ -11,6 +11,8 @@ import BrandHero from '../../components/BrandHero'
 import ContactsPanel from '../../components/ContactsPanel'
 import SocialIcons from '../../components/SocialIcons'
 import { slugToName, nameToSlug } from '../../utils/slug'
+import { useAuth } from '../../utils/AuthContext.jsx'
+import { getUser as apiGetUser, updateUser as apiUpdateUser } from '../../utils/api'
 
 export default function EditDigitalIDPage() {
   const { name: nameParam } = useParams()
@@ -20,13 +22,46 @@ export default function EditDigitalIDPage() {
   const [xUrl, setXUrl] = useState('')
   const [instagram, setInstagram] = useState('')
   const [facebook, setFacebook] = useState('')
+  const { userId, refreshProfile } = useAuth()
 
-  const handleSave = (e) => {
+  useEffect(() => {
+    async function loadProfile() {
+      if (!userId) return
+      try {
+        const { data } = await apiGetUser(userId)
+        setFullName(data.fullName || '')
+        setPhone(data.phoneNumber || '')
+        setLinkedin(data?.socialLinks?.linkedin || '')
+        setXUrl(data?.socialLinks?.twitter || '')
+        setInstagram(data?.socialLinks?.instagram || '')
+      } catch (_) {}
+    }
+    loadProfile()
+  }, [userId])
+
+  const handleSave = async (e) => {
     e.preventDefault()
-    // TODO: Integrate with your update API
-    const payload = { fullName, phone, linkedin, xUrl, instagram, facebook }
-    console.log('Saving updates:', payload)
-    alert('Saved updates (mock).')
+    if (!userId) {
+      alert('You must be logged in to update your profile.')
+      return
+    }
+    const payload = {
+      fullName,
+      phoneNumber: phone,
+      socialLinks: {
+        linkedin: linkedin || undefined,
+        twitter: xUrl || undefined,
+        instagram: instagram || undefined,
+      },
+    }
+    try {
+      const { data } = await apiUpdateUser(userId, payload)
+      await refreshProfile()
+      alert('Profile updated successfully.')
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Failed to update profile'
+      alert(msg)
+    }
   }
 
   const person = useMemo(() => ({

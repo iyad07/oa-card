@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../../utils/AuthContext.jsx'
+import { useNavigate } from 'react-router-dom'
+import { nameToSlug } from '../../utils/slug'
 import PrimaryButton from '../../components/PrimaryButton'
 import brandImg from '../../assets/Frame 16.png'
 
@@ -7,23 +9,37 @@ export default function StaffEmailPage() {
   const [email, setEmail] = useState('')
   const [step, setStep] = useState('email') // 'email' | 'verify'
   const [otp, setOtp] = useState('')
-  const { login } = useAuth()
+  const [otpSent, setOtpSent] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const { requestOtp, verifyOtp, profile } = useAuth()
+  const navigate = useNavigate()
 
-  const requestOtp = (e) => {
+  const handleRequestOtp = async (e) => {
     e.preventDefault()
-    // TODO: Integrate with OTP request API
-    console.log('Requesting OTP for:', email)
-    alert(`OTP request sent to: ${email || 'your email'}`)
-    setStep('verify')
+    try {
+      await requestOtp(email)
+      setOtpSent(true)
+      setStep('verify')
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Failed to send OTP'
+      alert(msg)
+    }
   }
 
-  const verifyOtp = (e) => {
+  const handleVerifyOtp = async (e) => {
     e.preventDefault()
-    // TODO: Integrate OTP verification API
-    console.log('Verifying OTP:', otp)
-    alert(`Verifying OTP: ${otp || '(empty)'}`)
-    // Mark user as verified/authenticated upon successful OTP verification
-    login()
+    try {
+      setIsVerifying(true)
+      await verifyOtp(email, otp)
+      const name = profile?.fullName || 'your-profile'
+      const slug = nameToSlug(name)
+      navigate(`/staff/update/${slug}`)
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Invalid or expired OTP'
+      alert(msg)
+    } finally {
+      setIsVerifying(false)
+    }
   }
 
   const resendCode = (e) => {
@@ -39,13 +55,18 @@ export default function StaffEmailPage() {
       <div className="flex items-center gap-2">
         <img src={brandImg} alt="OneAfrica Markets" className="h-6 w-auto" />
       </div>
+      {otpSent && (
+        <div role="alert" className="rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+          OTP sent successfully to <span className="font-medium">{email}</span>. Check your inbox for the code.
+        </div>
+      )}
       {step === 'email' ? (
         <>
           {/* Heading */}
           <h1 className="text-2xl font-medium text-[#00272B]">Access Your OA Digital ID</h1>
 
           {/* Email Form */}
-          <form onSubmit={requestOtp} className="space-y-4">
+          <form onSubmit={handleRequestOtp} className="space-y-4">
             <label htmlFor="staff-email" className="block text-sm text-[#00272B]">
               Staff Email
             </label>
@@ -59,7 +80,7 @@ export default function StaffEmailPage() {
               className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-[#00272B] focus:outline-none focus:ring-2 focus:ring-[#00272B]"
             />
 
-            <PrimaryButton label="Request OTP" className="w-full" onClick={requestOtp} />
+            <PrimaryButton label="Request OTP" className="w-full" onClick={handleRequestOtp} />
           </form>
         </>
       ) : (
@@ -76,7 +97,7 @@ export default function StaffEmailPage() {
           <h1 className="text-2xl font-medium text-[#00272B]">Verify Your Identity</h1>
 
           {/* Verify Form */}
-          <form onSubmit={verifyOtp} className="space-y-4">
+          <form onSubmit={handleVerifyOtp} className="space-y-4">
             <label htmlFor="otp" className="block text-sm text-[#00272B]">
               OTP
             </label>
@@ -98,7 +119,7 @@ export default function StaffEmailPage() {
               </button>
             </div>
 
-            <PrimaryButton label="Continue" className="w-full" onClick={verifyOtp} />
+            <PrimaryButton label="Continue" className="w-full" onClick={handleVerifyOtp} loading={isVerifying} />
           </form>
         </>
       )}
