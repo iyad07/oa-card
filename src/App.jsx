@@ -5,6 +5,7 @@ import StaffEmailPage from './pages/staff_side/StaffEmailPage.jsx'
 import EditDigitalIDPage from './pages/staff_side/EditDigitalIDPage.jsx'
 import UpdateCardPage from './pages/staff_side/UpdateCardPage.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+import NotFoundPage from './pages/NotFoundPage.jsx'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Route index element={<StaffEmailPage/>} />
           <Route path="/:name" element={<CardPage />} />
           <Route path="/staff" element={<StaffEmailPage />} />
+          <Route path="/404" element={<NotFoundPage />} />
           <Route
             path="/staff/edit/:name"
             element={
@@ -30,6 +32,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

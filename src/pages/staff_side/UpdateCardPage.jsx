@@ -1,24 +1,27 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { slugToName, nameToSlug } from '../../utils/slug'
 import { useAuth } from '../../utils/AuthContext.jsx'
-import { getVcardUrl } from '../../utils/api'
+import { getVcardUrl, getQrPngUrl } from '../../utils/api'
 import avatarImg from '../../assets/DSC00533.png'
 import linkedinLogo from '../../assets/ph_linkedin-logo.png'
 import xLogo from '../../assets/ph_x-logo.png'
 import instagramLogo from '../../assets/ph_instagram-logo.png'
 import facebookLogo from '../../assets/ph_facebook-logo.png'
 import BrandHero from '../../components/BrandHero'
+import QRBrandHero from '../../components/QRBrandHero'
 import ContactsPanel from '../../components/ContactsPanel'
 import PrimaryButton from '../../components/PrimaryButton'
 import SocialIcons from '../../components/SocialIcons'
 import IconDownload from '../../icons/DownloadIcon'
 import shareIconPng from '../../assets/ph_share-network.png'
 import IconShare from '../../icons/ShareIcon'
+import SmileyIcon from '../../icons/SmileyIcon'
 
 
 
 export default function UpdateCardPage() {
+  const [isQRMode, setIsQRMode] = useState(false)
   const { name: nameParam } = useParams()
   const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : 'Charis Borquaye'), [nameParam])
   const navigate = useNavigate()
@@ -58,12 +61,26 @@ export default function UpdateCardPage() {
     URL.revokeObjectURL(url)
   }
 
+  const handleLogout = () => {
+    logout()
+    navigate('/staff')
+  }
+
   return (
     <div className="space-y-2 lg:flex lg:flex-row lg:gap-4">
       {/* 5/6 width column */}
       <div className="w-full lg:w-[90%] space-y-2">
         {/* Brand + Hero */}
-        <BrandHero person={person} avatarUrl={avatarUrl} />
+        {isQRMode ? (
+          <QRBrandHero
+            person={person}
+            avatarUrl={avatarUrl}
+            onBackClick={() => setIsQRMode(false)}
+            qrImageUrl={userId ? getQrPngUrl(userId) : undefined}
+          />
+        ) : (
+          <BrandHero person={person} avatarUrl={avatarUrl} onQrClick={() => setIsQRMode(true)} />
+        )}
 
         {/* Contacts */}
         <ContactsPanel person={person} />
@@ -102,6 +119,10 @@ export default function UpdateCardPage() {
               <span className="text-sm">Download</span>
             </button>
           )}
+          <button type="button" className="flex items-center gap-2 text-[#00272B]" aria-label="Logout" onClick={handleLogout}>
+            <SmileyIcon />
+            <span className="text-sm">Logout</span>
+          </button>
         </div>
       </div>
     </div>
