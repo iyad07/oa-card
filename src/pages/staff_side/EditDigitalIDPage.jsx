@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import PrimaryButton from '../../components/PrimaryButton'
 import brandImg from '../../assets/Frame 16.png'
 import linkedinLogo from '../../assets/ph_linkedin-logo.png'
@@ -16,6 +16,7 @@ import { getUser as apiGetUser, updateUser as apiUpdateUser } from '../../utils/
 
 export default function EditDigitalIDPage() {
   const { name: nameParam } = useParams()
+  const navigate = useNavigate()
   const [fullName, setFullName] = useState(() => (nameParam ? slugToName(nameParam) : ''))
   const [phone, setPhone] = useState('')
   const [linkedin, setLinkedin] = useState('')
@@ -58,6 +59,7 @@ export default function EditDigitalIDPage() {
       const { data } = await apiUpdateUser(userId, payload)
       await refreshProfile()
       alert('Profile updated successfully.')
+      navigate(`/staff/update/${nameToSlug(fullName || 'Charis Borquaye')}`)
     } catch (err) {
       const msg = err?.response?.data?.message || 'Failed to update profile'
       alert(msg)
