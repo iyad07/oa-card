@@ -14,6 +14,7 @@ export default function App() {
         <Route element={<RootLayout />}>
           <Route index element={<StaffEmailPage/>} />
           <Route path="/:name" element={<CardPage />} />
+          <Route path="/scan/:id" element={<CardPage />} />
           <Route path="/staff" element={<StaffEmailPage />} />
           <Route path="/404" element={<NotFoundPage />} />
           <Route

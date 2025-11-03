@@ -19,7 +19,7 @@ import { getVcardUrl } from '../utils/api'
 
 export default function CardPage() {
   const [isQRMode, setIsQRMode] = useState(false)
-  const { name: nameParam } = useParams()
+  const { name: nameParam, id: idParam } = useParams()
   const { isReady, userId, profile } = useAuth()
 
   const profileSlug = useMemo(() => (profile?.fullName ? nameToSlug(profile.fullName) : ''), [profile])
@@ -74,8 +74,12 @@ export default function CardPage() {
     URL.revokeObjectURL(url)
   }
 
-  // Determine existence: only show backend-backed card if profile exists and slug matches
-  const existsInBackend = Boolean(profile && profileSlug && routeSlugNormalized === profileSlug)
+  // Determine existence:
+  // - For /scan/:id → only render if the id matches the authenticated userId
+  // - For /:name     → only render if slug matches the authenticated profile slug
+  const existsInBackend = idParam
+    ? Boolean(userId && idParam === userId)
+    : Boolean(profile && profileSlug && routeSlugNormalized === profileSlug)
 
   if (!isReady) {
     return null
