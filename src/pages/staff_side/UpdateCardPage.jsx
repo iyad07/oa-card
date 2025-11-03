@@ -128,7 +128,3 @@ export default function UpdateCardPage() {
     </div>
   )
 }
-  const handleLogout = () => {
-    logout()
-    navigate('/staff')
-  }
