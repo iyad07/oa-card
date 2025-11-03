@@ -13,7 +13,7 @@ import SocialIcons from '../components/SocialIcons'
 import IconDownload from '../icons/DownloadIcon'
 import { slugToName, nameToSlug } from '../utils/slug'
 import { useAuth } from '../utils/AuthContext.jsx'
-import { getVcardUrl, getUser } from '../utils/api'
+import { getVcardUrl, getUser, getQrPngUrl } from '../utils/api'
 
 
 
@@ -193,7 +193,12 @@ export default function CardPage() {
     <div className="space-y-2">
       {/* Brand + Hero */}
       {isQRMode ? (
-        <QRBrandHero person={idParam && publicPerson ? publicPerson : person} avatarUrl={avatarUrl} onBackClick={() => setIsQRMode(false)} />
+        <QRBrandHero
+          person={idParam && publicPerson ? publicPerson : person}
+          avatarUrl={avatarUrl}
+          onBackClick={() => setIsQRMode(false)}
+          qrImageUrl={idParam ? getQrPngUrl(idParam) : (userId ? getQrPngUrl(userId) : undefined)}
+        />
       ) : (
         <BrandHero person={idParam && publicPerson ? publicPerson : person} avatarUrl={avatarUrl} onQrClick={() => setIsQRMode(true)} />
       )}
