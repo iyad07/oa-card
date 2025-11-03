@@ -49,7 +49,7 @@ export default function EditDigitalIDPage() {
         </div>
 
         {/* Back link */}
-        <Link to="/staff/verify" className="text-[#00272B] text-sm inline-flex items-center gap-1">
+        <Link to="/staff/update" className="text-[#00272B] text-sm inline-flex items-center gap-1">
           <span aria-hidden>←</span> Back
         </Link>
 

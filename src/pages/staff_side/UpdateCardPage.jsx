@@ -64,7 +64,8 @@ export default function UpdateCardPage() {
         </div>
         {/* Actions */}
         <div className="flex items-center gap-3">
-          <PrimaryButton label="Update Contact" onClick={handleSaveContact} />
+          
+          <PrimaryButton label="Update Contact" onClick={() => window.location.href = '/staff/edit'} />
           <a className="card flex h-11 w-11 items-center justify-center p-0" href={`https://${person.website}`} target="_blank" rel="noreferrer" aria-label="Visit website">
             <IconShare/>
           </a>

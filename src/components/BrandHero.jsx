@@ -2,9 +2,8 @@ import brandImg from '../assets/Frame 16.png'
 import subtractBg from '../assets/Subtract (1).png'
 import vectorImg from '../assets/Vector.png'
 import IconQR from '../icons/QRIcon'
-import { Link } from 'react-router-dom'
 
-export default function BrandHero({ person, avatarUrl, heightClass = 'h-96' }) {
+export default function BrandHero({ person, avatarUrl, heightClass = 'h-96', onQrClick }) {
   return (
     <div className="relative overflow-hidden rounded-2xl shadow-sm ">
       <div className={`relative bg-[#F3F8F8] ${heightClass}`}>
@@ -45,9 +44,9 @@ export default function BrandHero({ person, avatarUrl, heightClass = 'h-96' }) {
               <div className="text-[20px] text-gray-900">{person.name}</div>
               <div className="text-[14px] text-gray-600">{person.title} | {person.location}</div>
             </div>
-            <Link to="/qr" className="text-gray-600" aria-label="Open QR card">
+            <button type="button" onClick={onQrClick} className="text-gray-600" aria-label="Open QR card">
               <IconQR />
-            </Link>
+            </button>
           </div>
         </div>
       </div>

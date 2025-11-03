@@ -2,10 +2,9 @@ import brandImg from '../assets/Frame 16.png'
 import subtractBg from '../assets/Subtract (1).png'
 import vectorImg from '../assets/Vector.png'
 import SmileyIcon from '../icons/SmileyIcon'
-import { Link } from 'react-router-dom'
 import QRCode from 'react-qr-code'
 
-export default function QRBrandHero({ person, avatarUrl }) {
+export default function QRBrandHero({ person, avatarUrl, onBackClick }) {
   return (
     <div className="relative overflow-hidden rounded-2xl shadow-sm ">
       <div className="relative bg-[#F3F8F8] h-96 ">
@@ -14,7 +13,7 @@ export default function QRBrandHero({ person, avatarUrl }) {
           <div className="h-full w-full grid place-items-center bg-white">
             <div className="rounded-xl p-4 bg-white">
               <QRCode
-                value={`${window.location.origin}/qr`}
+                value={`${window.location.origin}/`}
                 size={224}
                 bgColor="#ffffff"
                 fgColor="#00272B"
@@ -32,9 +31,9 @@ export default function QRBrandHero({ person, avatarUrl }) {
               <div className="text-[20px] text-gray-900">{person.name}</div>
               <div className="text-[14px] text-gray-600">{person.title} | {person.location}</div>
             </div>
-            <Link to="/" className="text-gray-600" aria-label="Back to card page">
+            <button type="button" onClick={onBackClick} className="text-gray-600" aria-label="Back to card page">
               <SmileyIcon />
-            </Link>
+            </button>
           </div>
         </div>
       </div>

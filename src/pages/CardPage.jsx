@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import avatarImg from '../assets/DSC00533.png'
 import linkedinLogo from '../assets/ph_linkedin-logo.png'
 import xLogo from '../assets/ph_x-logo.png'
 import instagramLogo from '../assets/ph_instagram-logo.png'
 import facebookLogo from '../assets/ph_facebook-logo.png'
 import BrandHero from '../components/BrandHero'
+import QRBrandHero from '../components/QRBrandHero'
 import ContactsPanel from '../components/ContactsPanel'
 import PrimaryButton from '../components/PrimaryButton'
 import SocialIcons from '../components/SocialIcons'
@@ -13,6 +14,7 @@ import IconDownload from '../icons/DownloadIcon'
 
 
 export default function CardPage() {
+  const [isQRMode, setIsQRMode] = useState(false)
   const person = useMemo(() => ({
     name: 'Charis Borquaye',
     title: 'Financial Analyst',
@@ -51,7 +53,11 @@ export default function CardPage() {
   return (
     <div className="space-y-2">
       {/* Brand + Hero */}
-      <BrandHero person={person} avatarUrl={avatarUrl} />
+      {isQRMode ? (
+        <QRBrandHero person={person} avatarUrl={avatarUrl} onBackClick={() => setIsQRMode(false)} />
+      ) : (
+        <BrandHero person={person} avatarUrl={avatarUrl} onQrClick={() => setIsQRMode(true)} />
+      )}
 
       {/* Contacts */}
       <ContactsPanel person={person} />
