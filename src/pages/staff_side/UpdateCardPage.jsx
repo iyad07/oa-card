@@ -48,6 +48,32 @@ export default function UpdateCardPage() {
     navigate('/staff')
   }
 
+  const handleShare = async () => {
+    const slug = nameToSlug(person.name || displayName || 'digital-id')
+    const shareUrl = userId
+      ? `${window.location.origin}/scan/${userId}`
+      : `${window.location.origin}/${slug}`
+    const shareData = {
+      title: `${person.name} | OA Digital ID`,
+      text: 'View my OneAfrica Markets Digital ID',
+      url: shareUrl,
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+        return
+      } catch (_) {
+        // user cancelled or share failed; continue to fallback
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      alert('Link copied to clipboard. Share it in your apps!')
+    } catch (_) {
+      window.prompt('Copy this link to share:', shareUrl)
+    }
+  }
+
   return (
     <div className="space-y-2 lg:flex lg:flex-row lg:gap-4">
       {/* 5/6 width column */}
@@ -87,16 +113,16 @@ export default function UpdateCardPage() {
               <IconDownload />
             </button>
           )}
-          <a className="card flex h-11 w-11 items-center justify-center p-0" href={`https://${person.website}`} target="_blank" rel="noreferrer" aria-label="Visit website">
+          <button type="button" className="card flex h-11 w-11 items-center justify-center p-0" onClick={handleShare} aria-label="Share card">
             <IconShare/>
-          </a>
+          </button>
         </div>
       </div>
 
       {/* 1/6 width column (desktop-only) */}
       <div className="hidden lg:block">
         <div className="space-y-3">
-          <button type="button" className="flex items-center gap-2 text-[#00272B]" aria-label="Share card">
+          <button type="button" className="flex items-center gap-2 text-[#00272B]" aria-label="Share card" onClick={handleShare}>
             <img src={shareIconPng} alt="Share" className="h-5 w-5 object-contain" />
             <span className="text-sm">Share</span>
           </button>
