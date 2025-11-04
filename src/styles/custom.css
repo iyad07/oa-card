@@ -13,3 +13,20 @@
 .notched-corner {
   clip-path: path("M0,20 Q0,0 20,0 L100%,0 L100%,100% L0,100% Z");
 }
+
+/* Mobile: prevent page scrolling and lock to viewport height */
+@media (max-width: 600px) {
+  html,
+  body {
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  #root {
+    /* Robust viewport locking across browsers */
+    height: 100vh;           /* fallback */
+    height: 100svh;          /* small viewport height (iOS 16+) */
+    height: 100dvh;          /* dynamic viewport height */
+    min-height: -webkit-fill-available; /* iOS Safari fallback */
+    overflow: hidden;
+  }
+}
