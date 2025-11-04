@@ -22,7 +22,7 @@ export default function NotFoundPage() {
           <PrimaryButton label="Go to Staff" onClick={() => navigate('/staff')} />
           <button
             type="button"
-            className="btn flex-1 h-11 border border-gray-200 bg-white text-[#00272B] hover:bg-gray-100"
+            className="btn flex-1 h-11 border border-gray-200 bg-white text-[#00272B] hover:bg-gray-100 justify-center"
             onClick={() => navigate('/')}
           >
             Back Home
