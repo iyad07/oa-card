@@ -14,6 +14,7 @@ import IconDownload from '../icons/DownloadIcon'
 import { slugToName, nameToSlug } from '../utils/slug'
 import { useAuth } from '../utils/AuthContext.jsx'
 import { getVcardUrl, getUser, getQrPngUrl } from '../utils/api'
+import SkeletonCard from '../components/SkeletonCard'
 
 
 
@@ -181,12 +182,25 @@ export default function CardPage() {
     ? Boolean((userId && idParam === userId) || publicPerson)
     : Boolean(profile && profileSlug && routeSlugNormalized === profileSlug)
 
-  // For named routes, wait for auth hydration; for scan routes, allow while public fetch runs
-  if (!idParam && !isReady) {
-    return null
+  // Show skeleton while loading
+  const isLoadingScan = Boolean(idParam) && publicLoadState === 'loading'
+  const isLoadingNamed = !idParam && !isReady
+  if (isLoadingScan || isLoadingNamed) {
+    return <SkeletonCard />
   }
 
   // If the person does not exist in backend (and public fetch failed), redirect to 404
+  if (idParam) {
+    // For /scan/:id, only redirect once public fetch definitively failed
+    if (publicLoadState === 'error') {
+      return <Navigate to="/404" replace />
+    }
+  } else {
+    // For /:name, once auth is hydrated, ensure slug matches the authenticated profile
+    if (isReady && !existsInBackend) {
+      return <Navigate to="/404" replace />
+    }
+  }
  
 
   return (
