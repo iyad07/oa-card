@@ -128,17 +128,18 @@ export default function UpdateCardPage() {
           </button>
           {userId ? (
             <a
-              href={getVcardUrl(userId)}
+              href={getQrPngUrl(userId)}
               className="flex items-center gap-2 text-[#00272B]"
-              aria-label="Download vCard"
+              aria-label="Download QR code"
+              download
             >
               <IconDownload />
-              <span className="text-sm">Download</span>
+              <span className="text-sm">Download QR</span>
             </a>
           ) : (
-            <button type="button" className="flex items-center gap-2 text-[#00272B] opacity-60" aria-label="Download vCard" disabled>
+            <button type="button" className="flex items-center gap-2 text-[#00272B] opacity-60" aria-label="Download QR code" disabled>
               <IconDownload />
-              <span className="text-sm">Download</span>
+              <span className="text-sm">Download QR</span>
             </button>
           )}
           <button type="button" className="flex items-center gap-2 text-[#00272B]" aria-label="Logout" onClick={handleLogout}>
