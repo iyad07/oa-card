@@ -17,6 +17,7 @@ import IconDownload from '../../icons/DownloadIcon'
 import shareIconPng from '../../assets/ph_share-network.png'
 import IconShare from '../../icons/ShareIcon'
 import SmileyIcon from '../../icons/SmileyIcon'
+import SkeletonCard from '../../components/SkeletonCard'
 
 
 
@@ -25,7 +26,7 @@ export default function UpdateCardPage() {
   const { name: nameParam } = useParams()
   const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : 'Charis Borquaye'), [nameParam])
   const navigate = useNavigate()
-  const { userId, profile, logout } = useAuth()
+  const { userId, profile, logout, isReady } = useAuth()
   const person = useMemo(() => ({
     name: profile?.fullName || displayName,
     title: profile?.position || 'Financial Analyst',
@@ -38,29 +39,14 @@ export default function UpdateCardPage() {
 
   const avatarUrl = avatarImg
 
-  const handleSaveContact = () => {
-    const vcard = [
-      'BEGIN:VCARD',
-      'VERSION:3.0',
-      `FN:${person.name}`,
-      `TITLE:${person.title}`,
-      `TEL;TYPE=CELL:${person.phone}`,
-      `EMAIL:${person.email}`,
-      `ADR;TYPE=HOME:;;${person.address};${person.location}`,
-      `URL:https://${person.website}`,
-      'END:VCARD',
-    ].join('\n')
-    const blob = new Blob([vcard], { type: 'text/vcard' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${person.name.replace(/\s+/g, '_')}.vcf`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    URL.revokeObjectURL(url)
+  // Show skeleton while auth hydrates or profile still loading
+  const isLoading = !isReady || (Boolean(userId) && !profile)
+  if (isLoading) {
+    // Use the same skeleton layout as CardPage for consistency
+    return <SkeletonCard />
   }
 
+ 
   const handleLogout = () => {
     logout()
     navigate('/staff')
