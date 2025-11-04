@@ -77,7 +77,7 @@ export default function StaffEmailPage() {
               placeholder="Staff Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-[#00272B] focus:outline-none focus:ring-2 focus:ring-[#00272B]"
+              className="h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-[#00272B] focus:outline-none focus:ring-1 focus:ring-[#00272B]"
             />
 
             <PrimaryButton label="Request OTP" className="w-full" onClick={handleRequestOtp} />
@@ -109,7 +109,7 @@ export default function StaffEmailPage() {
               placeholder="Enter OTP"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
-              className="h-11 w-full rounded-2xl border border-gray-200 bg-white px-4 text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-[#00272B] focus:outline-none focus:ring-2 focus:ring-[#00272B]"
+              className="h-11 w-full rounded-lg border border-gray-200 bg-white px-4 text-gray-900 placeholder:text-gray-400 shadow-sm focus:border-[#00272B] focus:outline-none focus:ring-1 focus:ring-[#00272B]"
             />
 
             <div className="text-sm text-gray-600">
