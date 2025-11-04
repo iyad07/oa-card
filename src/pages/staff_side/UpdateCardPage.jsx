@@ -77,6 +77,20 @@ export default function UpdateCardPage() {
         <div className="flex items-center gap-3">
           
           <PrimaryButton label="Update Contact" onClick={() => navigate(`/staff/edit/${nameToSlug(person.name)}`)} />
+          {userId ? (
+            <a
+              className="sm:hidden card flex h-11 w-11 items-center justify-center p-0"
+              href={getQrPngUrl(userId)}
+              download
+              aria-label="Download QR code"
+            >
+              <IconDownload />
+            </a>
+          ) : (
+            <button type="button" className="sm:hidden card flex h-11 w-11 items-center justify-center p-0 opacity-60" aria-label="Download QR code" disabled>
+              <IconDownload />
+            </button>
+          )}
           <a className="card flex h-11 w-11 items-center justify-center p-0" href={`https://${person.website}`} target="_blank" rel="noreferrer" aria-label="Visit website">
             <IconShare/>
           </a>
