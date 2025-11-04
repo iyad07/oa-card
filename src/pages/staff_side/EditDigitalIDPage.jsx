@@ -12,6 +12,7 @@ import ContactsPanel from '../../components/ContactsPanel'
 import SocialIcons from '../../components/SocialIcons'
 import { slugToName, nameToSlug } from '../../utils/slug'
 import { useAuth } from '../../utils/AuthContext.jsx'
+import SkeletonEditCard from '../../components/SkeletonEditCard'
 import { getUser as apiGetUser, updateUser as apiUpdateUser } from '../../utils/api'
 
 export default function EditDigitalIDPage() {
@@ -23,11 +24,16 @@ export default function EditDigitalIDPage() {
   const [xUrl, setXUrl] = useState('')
   const [instagram, setInstagram] = useState('')
   const [facebook, setFacebook] = useState('')
-  const { userId, refreshProfile } = useAuth()
+  const { userId, refreshProfile, isReady } = useAuth()
+  const [isHydrating, setIsHydrating] = useState(true)
 
   useEffect(() => {
     async function loadProfile() {
-      if (!userId) return
+      if (!userId) {
+        setIsHydrating(false)
+        return
+      }
+      setIsHydrating(true)
       try {
         const { data } = await apiGetUser(userId)
         setFullName(data.fullName || '')
@@ -35,7 +41,11 @@ export default function EditDigitalIDPage() {
         setLinkedin(data?.socialLinks?.linkedin || '')
         setXUrl(data?.socialLinks?.twitter || '')
         setInstagram(data?.socialLinks?.instagram || '')
-      } catch (_) {}
+      } catch (_) {
+        // ignore
+      } finally {
+        setIsHydrating(false)
+      }
     }
     loadProfile()
   }, [userId])
@@ -77,6 +87,11 @@ export default function EditDigitalIDPage() {
   }), [fullName, phone])
 
   const avatarUrl = avatarImg
+
+  // Show skeleton while auth hydrates or profile is being fetched
+  if (!isReady || isHydrating) {
+    return <SkeletonEditCard />
+  }
 
   return (
     <div className="rounded-2xl bg-[#F3F8F8]  shadow-sm lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0 space-y-6">
