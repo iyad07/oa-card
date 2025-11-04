@@ -1,10 +1,6 @@
 import { useMemo, useState, useEffect } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
 import avatarImg from '../assets/DSC00533.png'
-import linkedinLogo from '../assets/ph_linkedin-logo.png'
-import xLogo from '../assets/ph_x-logo.png'
-import instagramLogo from '../assets/ph_instagram-logo.png'
-import facebookLogo from '../assets/ph_facebook-logo.png'
 import BrandHero from '../components/BrandHero'
 import QRBrandHero from '../components/QRBrandHero'
 import ContactsPanel from '../components/ContactsPanel'
@@ -26,6 +22,7 @@ export default function CardPage() {
   // Public vCard state for scan/:id when viewer is not authenticated
   const [publicPerson, setPublicPerson] = useState(null)
   const [publicLoadState, setPublicLoadState] = useState('idle') // 'idle' | 'loading' | 'loaded' | 'error'
+  const [publicSocialLinks, setPublicSocialLinks] = useState(null)
 
   const profileSlug = useMemo(() => (profile?.fullName ? nameToSlug(profile.fullName) : ''), [profile])
   const routeSlugNormalized = useMemo(() => (
@@ -96,6 +93,7 @@ export default function CardPage() {
     if (userId && idParam === userId) {
       setPublicPerson(null)
       setPublicLoadState('idle')
+      setPublicSocialLinks(null)
       return
     }
     let cancelled = false
@@ -114,6 +112,7 @@ export default function CardPage() {
           address: data?.address || '—',
         }
         setPublicPerson(parsed)
+        setPublicSocialLinks(data?.socialLinks || null)
         setPublicLoadState('loaded')
       } catch (_err) {
         if (cancelled) return
@@ -162,6 +161,7 @@ export default function CardPage() {
             address: address || '—',
           }
           setPublicPerson(parsed)
+          setPublicSocialLinks(null)
           setPublicLoadState('loaded')
         } catch (_err2) {
           if (cancelled) return
@@ -220,8 +220,8 @@ export default function CardPage() {
       {/* Contacts */}
       <ContactsPanel person={idParam && publicPerson ? publicPerson : person} />
 
-      {/* Social icons */}
-      <SocialIcons />
+      {/* Social icons sourced from backend */}
+      <SocialIcons links={idParam && publicPerson ? (publicSocialLinks || {}) : (profile?.socialLinks || {})} />
 
       {/* Actions */}
       <div className="flex items-center gap-3">

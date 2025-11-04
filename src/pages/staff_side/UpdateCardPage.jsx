@@ -4,10 +4,6 @@ import { slugToName, nameToSlug } from '../../utils/slug'
 import { useAuth } from '../../utils/AuthContext.jsx'
 import { getVcardUrl, getQrPngUrl } from '../../utils/api'
 import avatarImg from '../../assets/DSC00533.png'
-import linkedinLogo from '../../assets/ph_linkedin-logo.png'
-import xLogo from '../../assets/ph_x-logo.png'
-import instagramLogo from '../../assets/ph_instagram-logo.png'
-import facebookLogo from '../../assets/ph_facebook-logo.png'
 import BrandHero from '../../components/BrandHero'
 import QRBrandHero from '../../components/QRBrandHero'
 import ContactsPanel from '../../components/ContactsPanel'
@@ -71,7 +67,7 @@ export default function UpdateCardPage() {
         {/* Contacts */}
         <ContactsPanel person={person} />
         <div className="sm:hidden">
-          <SocialIcons />
+          <SocialIcons links={profile?.socialLinks || {}} />
         </div>
         {/* Actions */}
         <div className="flex items-center gap-3">
