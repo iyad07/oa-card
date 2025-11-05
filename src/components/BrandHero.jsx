@@ -15,17 +15,17 @@ export default function BrandHero({ person, avatarUrl, heightClass = 'h-[19rem]'
             className="absolute right-0 top-0 z-[10] h-full w-full object-fill pointer-events-none"
           />
           <div className="absolute top-0 right-0 h-[100%] flex items-center justify-center overflow-hidden z-[30]">
-            <img src={avatarUrl} alt="Portrait" className="h-full w-full object-fill" />
+            <img src={avatarUrl} alt="Portrait" className="h-full w-full object-cover" />
           </div>
           <div className="absolute top-0 right-0 h-[100%] flex items-center justify-center overflow-hidden z-[20]">
-            <img src={vectorImg} alt="Portrait" className="h-full w-full object-fill" />
+            <img src={vectorImg} alt="Portrait" className="h-full w-full object-cover" />
           </div>
         </div>
         <div className="absolute inset-0 bg-white rounded-2xl w-[40%] h-[30%] ">
           <img
             src={brandImg}
             alt="brand"
-            className="h-[50%] w-[70%] object-contain object-right-top pl-3 pt-4 "
+            className=" absolute h-[50%] w-[70%] object-contain object-right-top pl-3 pt-3 "
           />
         </div>
 

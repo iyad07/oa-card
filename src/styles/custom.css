@@ -10,23 +10,41 @@
 .link-brand:hover {
   color: #535bf2;
 }
-.notched-corner {
-  clip-path: path("M0,20 Q0,0 20,0 L100%,0 L100%,100% L0,100% Z");
-}
 
-/* Mobile: prevent page scrolling and lock to viewport height */
+
+/* Mobile: use dynamic viewport height and allow vertical scrolling */
 @media (max-width: 600px) {
   html,
   body {
-    overflow: hidden;
-    overscroll-behavior: none;
+    /* Allow page to scroll vertically while preventing horizontal overflow */
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   #root {
-    /* Robust viewport locking across browsers */
+    /* Robust viewport height across browsers */
     height: 100vh;           /* fallback */
     height: 100svh;          /* small viewport height (iOS 16+) */
     height: 100dvh;          /* dynamic viewport height */
     min-height: -webkit-fill-available; /* iOS Safari fallback */
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+/* Uniform padding and full-viewport stretch for screens <700px */
+@media (max-width: 700px) {
+  html,
+  body,
+  #root {
+    box-sizing: border-box;
+    padding: 1rem; /* same padding height and width */
+    width: 100vw;
+    min-height: 100dvh;
+  }
+  /* Override utility classes to ensure consistent padding and width */
+  #root main {
+    padding: 1rem; /* unify vertical + horizontal padding */
+    max-width: 100%; /* stretch width-wise within viewport */
   }
 }
