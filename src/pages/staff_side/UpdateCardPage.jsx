@@ -10,7 +10,7 @@ import ContactsPanel from '../../components/ContactsPanel'
 import PrimaryButton from '../../components/PrimaryButton'
 import SocialIcons from '../../components/SocialIcons'
 import IconDownload from '../../icons/DownloadIcon'
-import shareIconPng from '../../assets/ph_share-network.png'
+import shareIconPng from '../../assets/share_icon.svg'
 import IconShare from '../../icons/ShareIcon'
 import SmileyIcon from '../../icons/SmileyIcon'
 import SkeletonCard from '../../components/SkeletonCard'
@@ -37,8 +37,8 @@ export default function UpdateCardPage() {
 
   const avatarUrl = avatarImg
 
-  // Show skeleton while auth hydrates or profile still loading
-  const isLoading = !isReady || (Boolean(userId) && !profile)
+  // Show skeleton while auth hydrates or profile still loading from backend
+  const isLoading = !isReady || !profile
   if (isLoading) {
     // Use the same skeleton layout as CardPage for consistency
     return <SkeletonCard />

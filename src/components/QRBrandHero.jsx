@@ -1,6 +1,4 @@
-import brandImg from '../assets/Frame 16.png'
-import subtractBg from '../assets/Subtract (1).png'
-import vectorImg from '../assets/Vector.png'
+
 import SmileyIcon from '../icons/SmileyIcon'
 import QRCode from 'react-qr-code'
 import { nameToSlug } from '../utils/slug'

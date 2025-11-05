@@ -1,4 +1,4 @@
-import shareIconPng from '../assets/ph_share-network.png'
+import shareIconPng from '../assets/share_icon.svg'
 
 export default function IconShare() {
   return (

@@ -1,4 +1,4 @@
-import brandImg from '../assets/Frame 16.png'
+import brandImg from '../assets/logo.svg'
 import PrimaryButton from '../components/PrimaryButton'
 import { useNavigate } from 'react-router-dom'
 

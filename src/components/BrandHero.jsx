@@ -1,4 +1,4 @@
-import brandImg from '../assets/Frame 16.png'
+import brandImg from '../assets/logo.svg'
 import subtractBg from '../assets/Subtract (1).png'
 import vectorImg from '../assets/Vector.png'
 import IconQR from '../icons/QRIcon'

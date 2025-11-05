@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import PrimaryButton from '../../components/PrimaryButton'
-import brandImg from '../../assets/Frame 16.png'
+import brandImg from '../../assets/logo.svg'
 import linkedinLogo from '../../assets/ph_linkedin-logo.png'
 import xLogo from '../../assets/ph_x-logo.png'
 import instagramLogo from '../../assets/ph_instagram-logo.png'

@@ -3,7 +3,7 @@ import { useAuth } from '../../utils/AuthContext.jsx'
 import { useNavigate } from 'react-router-dom'
 import { nameToSlug } from '../../utils/slug'
 import PrimaryButton from '../../components/PrimaryButton'
-import brandImg from '../../assets/Frame 16.png'
+import brandImg from '../../assets/logo.svg'
 
 export default function StaffEmailPage() {
   const [email, setEmail] = useState('')

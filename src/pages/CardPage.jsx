@@ -195,7 +195,12 @@ export default function CardPage() {
     : Boolean(profile && profileSlug && routeSlugNormalized === profileSlug)
 
   // Show skeleton while loading
-  const isLoading = !isReady || (Boolean(userId) && !profile)
+  // - Auth hydration or owner profile pending
+  // - Public scan (idParam) while backend fetch is in 'idle' or 'loading'
+  const isLoading =
+    !isReady ||
+    (Boolean(userId) && !profile) ||
+    (idParam && !(userId && idParam === userId) && (publicLoadState === 'idle' || publicLoadState === 'loading'))
   if (isLoading) {
     // Use the same skeleton layout as CardPage for consistency
     return <SkeletonCard />
