@@ -20,7 +20,7 @@ import SkeletonCard from '../../components/SkeletonCard'
 export default function UpdateCardPage() {
   const [isQRMode, setIsQRMode] = useState(false)
   const { name: nameParam } = useParams()
-  const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : 'Charis Borquaye'), [nameParam])
+  const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : '-'), [nameParam])
   const navigate = useNavigate()
   const { userId, profile, logout, isReady } = useAuth()
   const person = useMemo(() => ({
@@ -29,7 +29,9 @@ export default function UpdateCardPage() {
     location: profile?.location || 'Unknown',
     phone: profile?.phoneNumber || 'Unknown',
     email: profile?.email || 'Unknown',
-    website: profile?.website || 'Unknown',
+    website: userId
+      ? `${window.location.host}/scan/${userId}`
+      : (profile?.website?.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'Unknown'),
     address: profile?.address || 'Unknown',
   }), [profile, displayName])
 
@@ -50,9 +52,7 @@ export default function UpdateCardPage() {
 
   const handleShare = async () => {
     const slug = nameToSlug(person.name || displayName || 'digital-id')
-    const shareUrl = userId
-      ? `${window.location.origin}/scan/${userId}`
-      : `${window.location.origin}/${slug}`
+    const shareUrl =`${window.location.origin}/scan/${userId}`
     const shareData = {
       title: `${person.name} | OA Digital ID`,
       text: 'View my OneAfrica Markets Digital ID',

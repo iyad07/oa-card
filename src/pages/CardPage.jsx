@@ -28,6 +28,7 @@ export default function CardPage() {
   const routeSlugNormalized = useMemo(() => (
     nameParam ? nameToSlug(slugToName(nameParam)) : ''
   ), [nameParam])
+  const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : (profile?.fullName || '')),[nameParam, profile])
 
   const person = useMemo(() => ({
     name: profile?.fullName|| 'Unknown',
@@ -35,7 +36,9 @@ export default function CardPage() {
     location: profile?.location || 'Unknown',
     phone: profile?.phoneNumber || 'Unknown',
     email: profile?.email || 'Unknown',
-    website: profile?.website || 'Unknown',
+     website: userId
+      ? `${window.location.host}/scan/${userId}`
+      : null,
     address: profile?.address || 'Unknown',
   }), [profile, displayName])
 
@@ -225,6 +228,7 @@ export default function CardPage() {
       {/* Actions */}
       <div className="flex items-center gap-3">
         <PrimaryButton label={'Save Contact'} onClick={handleSaveContact} />
+        
       </div>
     </div>
   )
