@@ -25,12 +25,12 @@ export default function UpdateCardPage() {
   const { userId, profile, logout, isReady } = useAuth()
   const person = useMemo(() => ({
     name: profile?.fullName || displayName,
-    title: profile?.position || 'Financial Analyst',
-    location: profile?.location || 'Ghana',
-    phone: profile?.phoneNumber || '(505) 555-0125',
-    email: profile?.email || 'at@oamarkets.com',
-    website: profile?.website || 'oamarkets.com',
-    address: profile?.address || '1 Norfo Close, Dzorwulu, Accra',
+    title: profile?.position || 'Unknown',
+    location: profile?.location || 'Unknown',
+    phone: profile?.phoneNumber || 'Unknown',
+    email: profile?.email || 'Unknown',
+    website: profile?.website || 'Unknown',
+    address: profile?.address || 'Unknown',
   }), [profile, displayName])
 
   const avatarUrl = avatarImg
@@ -119,7 +119,6 @@ export default function UpdateCardPage() {
         </div>
       </div>
 
-      {/* 1/6 width column (desktop-only) */}
       <div className="hidden lg:block">
         <div className="space-y-3">
           <button type="button" className="flex items-center gap-2 text-[#00272B]" aria-label="Share card" onClick={handleShare}>
