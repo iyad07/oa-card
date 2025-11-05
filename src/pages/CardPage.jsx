@@ -225,9 +225,6 @@ export default function CardPage() {
       {/* Actions */}
       <div className="flex items-center gap-3">
         <PrimaryButton label={'Save Contact'} onClick={handleSaveContact} />
-        <a className="card flex h-11 w-11 items-center justify-center p-0" href={`https://${(idParam && publicPerson ? publicPerson.website : person.website)}`} target="_blank" rel="noreferrer" aria-label="Visit website">
-          <IconDownload />
-        </a>
       </div>
     </div>
   )
