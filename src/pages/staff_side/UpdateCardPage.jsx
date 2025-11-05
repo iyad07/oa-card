@@ -24,7 +24,7 @@ export default function UpdateCardPage() {
   const navigate = useNavigate()
   const { userId, profile, logout, isReady } = useAuth()
   const person = useMemo(() => ({
-    name: profile?.fullName || displayName,
+    name: profile?.fullName || 'Unknown',
     title: profile?.position || 'Unknown',
     location: profile?.location || 'Unknown',
     phone: profile?.phoneNumber || 'Unknown',
