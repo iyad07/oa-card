@@ -3,7 +3,7 @@ import subtractBg from '../assets/Subtract (1).png'
 import vectorImg from '../assets/Vector.png'
 import IconQR from '../icons/QRIcon'
 
-export default function BrandHero({ person, avatarUrl, heightClass = 'h-[19rem]', onQrClick }) {
+export default function BrandHero({ person, avatarUrl, heightClass = 'h-[25rem]', onQrClick }) {
   return (
     <div className="relative overflow-hidden rounded-2xl shadow-sm ">
       <div className={`relative bg-[#F3F8F8] ${heightClass}`}>
@@ -25,7 +25,7 @@ export default function BrandHero({ person, avatarUrl, heightClass = 'h-[19rem]'
           <img
             src={brandImg}
             alt="brand"
-            className=" absolute h-[50%] w-[70%] object-contain object-right-top pl-3 pt-3 "
+            className=" absolute h-[50%] w-[70%] object-contain object-right-top pl-3 pt-5 "
           />
         </div>
 
