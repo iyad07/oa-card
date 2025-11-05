@@ -1,7 +1,7 @@
-import linkedinLogo from '../assets/ph_linkedin-logo.png'
-import xLogo from '../assets/ph_x-logo.png'
-import instagramLogo from '../assets/ph_instagram-logo.png'
-import facebookLogo from '../assets/ph_facebook-logo.png'
+import linkedinLogo from '../assets/linkedIn_icon.svg'
+import xLogo from '../assets/twitter_icon.svg'
+import instagramLogo from '../assets/ig_icon.svg'
+import facebookLogo from '../assets/facebook_icon.svg'
 
 export default function SocialIcons({ links }) {
   const normalizeUrl = (url) => {
