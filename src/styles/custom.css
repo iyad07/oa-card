@@ -28,5 +28,6 @@
     height: 100dvh;          /* dynamic viewport height */
     min-height: -webkit-fill-available; /* iOS Safari fallback */
     overflow: hidden;
+    overscroll-behavior: none;
   }
 }

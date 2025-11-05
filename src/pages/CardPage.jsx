@@ -12,8 +12,6 @@ import { useAuth } from '../utils/AuthContext.jsx'
 import { getVcardUrl, getUser, getQrPngUrl } from '../utils/api'
 import SkeletonCard from '../components/SkeletonCard'
 
-
-
 export default function CardPage() {
   const [isQRMode, setIsQRMode] = useState(false)
   const { name: nameParam, id: idParam } = useParams()
@@ -24,23 +22,31 @@ export default function CardPage() {
   const [publicLoadState, setPublicLoadState] = useState('idle') // 'idle' | 'loading' | 'loaded' | 'error'
   const [publicSocialLinks, setPublicSocialLinks] = useState(null)
 
-  const profileSlug = useMemo(() => (profile?.fullName ? nameToSlug(profile.fullName) : ''), [profile])
-  const routeSlugNormalized = useMemo(() => (
-    nameParam ? nameToSlug(slugToName(nameParam)) : ''
-  ), [nameParam])
-  const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : (profile?.fullName || '')),[nameParam, profile])
+  const profileSlug = useMemo(
+    () => (profile?.fullName ? nameToSlug(profile.fullName) : ''),
+    [profile]
+  )
+  const routeSlugNormalized = useMemo(
+    () => (nameParam ? nameToSlug(slugToName(nameParam)) : ''),
+    [nameParam]
+  )
+  const displayName = useMemo(
+    () => (nameParam ? slugToName(nameParam) : profile?.fullName || ''),
+    [nameParam, profile]
+  )
 
-  const person = useMemo(() => ({
-    name: profile?.fullName|| 'Unknown',
-    title: profile?.position || 'Unknown',
-    location: profile?.location || 'Unknown',
-    phone: profile?.phoneNumber || 'Unknown',
-    email: profile?.email || 'Unknown',
-     website: userId
-      ? `${window.location.host}/scan/${userId}`
-      : null,
-    address: profile?.address || 'Unknown',
-  }), [profile, displayName])
+  const person = useMemo(
+    () => ({
+      name: profile?.fullName || 'Unknown',
+      title: profile?.position || 'Unknown',
+      location: profile?.location || 'Unknown',
+      phone: profile?.phoneNumber || 'Unknown',
+      email: profile?.email || 'Unknown',
+      website: userId ? `${window.location.host}/scan/${userId}` : null,
+      address: profile?.address || 'Unknown',
+    }),
+    [profile, displayName]
+  )
 
   const avatarUrl = avatarImg
 
@@ -110,7 +116,9 @@ export default function CardPage() {
           location: data?.location || 'Ghana',
           phone: data?.phoneNumber || '—',
           email: data?.email || '—',
-          website: (data?.website || 'oamarkets.com').replace(/^https?:\/\//, '').replace(/\/$/, ''),
+          website: (data?.website || 'oamarkets.com')
+            .replace(/^https?:\/\//, '')
+            .replace(/\/$/, ''),
           address: data?.address || '—',
         }
         setPublicPerson(parsed)
@@ -172,7 +180,9 @@ export default function CardPage() {
       }
     }
     hydrateFromUserOrVcard()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [idParam, userId])
 
   // Determine existence:
@@ -185,9 +195,9 @@ export default function CardPage() {
     : Boolean(profile && profileSlug && routeSlugNormalized === profileSlug)
 
   // Show skeleton while loading
-  const isLoadingScan = Boolean(idParam) && publicLoadState === 'loading'
-  const isLoadingNamed = !idParam && !isReady
-  if (isLoadingScan || isLoadingNamed) {
+  const isLoading = !isReady || (Boolean(userId) && !profile)
+  if (isLoading) {
+    // Use the same skeleton layout as CardPage for consistency
     return <SkeletonCard />
   }
 
@@ -203,7 +213,6 @@ export default function CardPage() {
       return <Navigate to="/404" replace />
     }
   }
- 
 
   return (
     <div className="space-y-2">
@@ -213,22 +222,27 @@ export default function CardPage() {
           person={idParam && publicPerson ? publicPerson : person}
           avatarUrl={avatarUrl}
           onBackClick={() => setIsQRMode(false)}
-          qrImageUrl={idParam ? getQrPngUrl(idParam) : (userId ? getQrPngUrl(userId) : undefined)}
+          qrImageUrl={idParam ? getQrPngUrl(idParam) : userId ? getQrPngUrl(userId) : undefined}
         />
       ) : (
-        <BrandHero person={idParam && publicPerson ? publicPerson : person} avatarUrl={avatarUrl} onQrClick={() => setIsQRMode(true)} />
+        <BrandHero
+          person={idParam && publicPerson ? publicPerson : person}
+          avatarUrl={avatarUrl}
+          onQrClick={() => setIsQRMode(true)}
+        />
       )}
 
       {/* Contacts */}
       <ContactsPanel person={idParam && publicPerson ? publicPerson : person} />
 
       {/* Social icons sourced from backend */}
-      <SocialIcons links={idParam && publicPerson ? (publicSocialLinks || {}) : (profile?.socialLinks || {})} />
+      <SocialIcons
+        links={idParam && publicPerson ? publicSocialLinks || {} : profile?.socialLinks || {}}
+      />
 
       {/* Actions */}
       <div className="flex items-center gap-3">
         <PrimaryButton label={'Save Contact'} onClick={handleSaveContact} />
-        
       </div>
     </div>
   )

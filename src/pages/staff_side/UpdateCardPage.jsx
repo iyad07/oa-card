@@ -77,7 +77,7 @@ export default function UpdateCardPage() {
   return (
     <div className="space-y-2 lg:flex lg:flex-row lg:gap-4">
       {/* 5/6 width column */}
-      <div className="w-full lg:w-[95%] space-y-2">
+      <div className="lg:w-[95%] space-y-2">
         {/* Brand + Hero */}
         {isQRMode ? (
           <QRBrandHero
