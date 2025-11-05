@@ -28,16 +28,15 @@ export default function CardPage() {
   const routeSlugNormalized = useMemo(() => (
     nameParam ? nameToSlug(slugToName(nameParam)) : ''
   ), [nameParam])
-  const displayName = useMemo(() => (nameParam ? slugToName(nameParam) : (profile?.fullName || '')),[nameParam, profile])
 
   const person = useMemo(() => ({
-    name: profile?.fullName || displayName || 'Unknown',
-    title: profile?.position || 'Financial Analyst',
-    location: profile?.location || 'Ghana',
-    phone: profile?.phoneNumber || '(505) 555-0125',
-    email: profile?.email || 'at@oamarkets.com',
-    website: profile?.website || 'oamarkets.com',
-    address: profile?.address || '1 Norfo Close, Dzorwulu, Accra',
+    name: profile?.fullName|| 'Unknown',
+    title: profile?.position || 'Unknown',
+    location: profile?.location || 'Unknown',
+    phone: profile?.phoneNumber || 'Unknown',
+    email: profile?.email || 'Unknown',
+    website: profile?.website || 'Unknown',
+    address: profile?.address || 'Unknown',
   }), [profile, displayName])
 
   const avatarUrl = avatarImg
@@ -225,7 +224,7 @@ export default function CardPage() {
 
       {/* Actions */}
       <div className="flex items-center gap-3">
-        <PrimaryButton label={userId ? 'Download vCard' : 'Save Contact'} onClick={handleSaveContact} />
+        <PrimaryButton label={'Save Contact'} onClick={handleSaveContact} />
         <a className="card flex h-11 w-11 items-center justify-center p-0" href={`https://${(idParam && publicPerson ? publicPerson.website : person.website)}`} target="_blank" rel="noreferrer" aria-label="Visit website">
           <IconDownload />
         </a>
