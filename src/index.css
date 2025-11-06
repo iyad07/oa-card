@@ -4,7 +4,7 @@
 
 /* Global base styles */
 :root {
-  --brand: #646cff;
+  --brand: #00272bb4;
 }
 .notched-corner {
   clip-path: path("M0,20 Q0,0 20,0 L100%,0 L100%,100% L0,100% Z");
